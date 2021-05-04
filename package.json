@@ -1,5 +1,5 @@
 {
-  "name": "noytdl",
+  "name": "noyt",
   "version": "1.0.0",
   "description": "Youtube-dl browser client and backend",
   "main": "app.js",
