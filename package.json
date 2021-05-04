@@ -2,7 +2,7 @@
   "name": "noytdl",
   "version": "1.0.0",
   "description": "Youtube-dl browser client and backend",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/jack-davidson/noytdl/issues"
   },
-  "homepage": "https://github.com/jack-davidson/noytdl#readme"
+  "homepage": "https://github.com/jack-davidson/noytdl#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
