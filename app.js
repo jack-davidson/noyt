@@ -26,8 +26,6 @@ app.post('/video', (req, res) => {
         req.body.video_url,
         '-o',
         'public/videos/%(title)s%(id)s.%(ext)s',
-        '-f',
-        'bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4',
     ]);
     youtubeDL.on('close', () => {
         fs.readdir('public/videos/', 'utf8', (err, fileNames) => {
