@@ -1,6 +1,10 @@
 const express = require('express');
-const youtubeDl = require('youtube-dl-exec');
 const fs = require('fs');
+const { spawn } = require('child_process');
+
+function getVideoId(url) {
+    return url.replace(/.*v=/, '');
+}
 
 const app = express();
 
@@ -18,14 +22,15 @@ app.get('/', (_, res) => {
 });
 
 app.post('/video', (req, res) => {
-    youtubeDl(req.body.video_url, {
-        dumpJson: true,
-        noCallHome: true,
-        format: 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4'
-    }).then((output) => {
-        res.send(`
-        <a href=\"${'public/videos/' + output['title'] + '.' + output['ext']}\" download>click here to download your video</a>
-        `)
+    const youtubeDL = spawn('youtube-dl', [
+        req.body.video_url,
+        '-o',
+        'public/videos/%(id)s.%(ext)s',
+        '-f',
+        'bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4',
+    ]);
+    youtubeDL.on('close', () => {
+        res.download('public/videos/' + getVideoId(req.body.video_url) + '.mp4');
     });
 });
 
