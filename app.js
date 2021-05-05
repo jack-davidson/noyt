@@ -25,12 +25,18 @@ app.post('/video', (req, res) => {
     const youtubeDL = spawn('youtube-dl', [
         req.body.video_url,
         '-o',
-        'public/videos/%(id)s.%(ext)s',
+        'public/videos/%(title)s%(id)s.%(ext)s',
         '-f',
         'bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4',
     ]);
     youtubeDL.on('close', () => {
-        res.download('public/videos/' + getVideoId(req.body.video_url) + '.mp4');
+        fs.readdir('public/videos/', 'utf8', (err, fileNames) => {
+            fileNames.forEach((fileName) => {
+                if (String(fileName).includes(getVideoId(req.body.video_url))) {
+                    res.download('public/videos/' + fileName);
+                }
+            });
+        });
     });
 });
 
