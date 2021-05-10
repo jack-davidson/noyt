@@ -1,11 +1,22 @@
-:root {
-    font-family: 'Roboto', sans-serif;
+body {
+    font-family: 'Roboto Mono', sans-serif;
+    text-align: center;
+    color: black;
 }
 
 input {
     font-family: 'Roboto', sans-serif;
+    border-color: black;
+    border-width: 1px;
+    background-color: white;
+    color: black;
 }
 
 .video_form {
-    margin: auto;
+    text-align: center;
+}
+
+footer {
+    margin-top: 10%;
+    float: center;
 }
