@@ -5,3 +5,7 @@
 input {
     font-family: 'Roboto', sans-serif;
 }
+
+.video_form {
+    margin: auto;
+}
