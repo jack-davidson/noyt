@@ -24,7 +24,11 @@ input[type="text"]:focus {
     text-align: center;
 }
 
+a {
+    color: black;
+}
+
 footer {
-    margin-top: 10%;
+    margin-top: 10px;
     float: center;
 }
