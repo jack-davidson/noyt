@@ -5,11 +5,19 @@ body {
 }
 
 input {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto Mono', sans-serif;
     border-color: black;
     border-width: 1px;
     background-color: white;
     color: black;
+}
+
+input[type="text"] {
+    font-family: 'Roboto Mono', sans-serif;
+}
+
+input[type="text"]:focus {
+    outline: none;
 }
 
 .video_form {
