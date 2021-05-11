@@ -5,22 +5,15 @@ body {
 }
 
 input {
-    font-family: 'Roboto Mono', sans-serif;
+    font-family: inherit;
     border-color: black;
+    color: inherit;
+    background-color: inherit;
     border-width: 1px;
-    background-color: white;
-    color: black;
-}
-
-input[type="text"] {
-    font-family: 'Roboto Mono', sans-serif;
-}
-
-input[type="text"]:focus {
     outline: none;
 }
 
-.video_form {
+form {
     text-align: center;
 }
 
