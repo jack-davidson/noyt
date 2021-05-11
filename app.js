@@ -22,6 +22,13 @@ app.get('/', (_, res) => {
 });
 
 app.post('/video', (req, res) => {
+    fs.readdir('public/videos/', 'utf8', (err, fileNames) => {
+        fileNames.forEach((fileName) => {
+            if (String(fileName).includes(getVideoId(req.body.video_url))) {
+                res.download('public/videos/' + fileName);
+            }
+        });
+    });
     const youtubeDL = spawn('youtube-dl', [
         req.body.video_url,
         '-o',
