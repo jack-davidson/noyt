@@ -1,9 +1,49 @@
 const express = require('express');
-const fs = require('fs');
 const { spawn } = require('child_process');
+const { existsSync } = require('fs');
 
-function getVideoId(url) {
-    return url.replace(/.*v=/, '');
+function getVideoId(serializedURL) {
+    /* create a url object, removing the leading world wide web subdomain */
+    videoURL = new URL(serializedURL.replace(/www\./, ''));
+
+    /* The id is extracted in a different way depending on the url.
+     *
+     * If the url's hostname is youtube.com, the uri format looks like so:
+     *     youtube.com/watch?v=<id>
+     *
+     * If the url's hostname is youtu.be, the uri format looks like so:
+     *     youtu.be/<id>
+     *
+     * This means that the id must be extracted in different ways.
+     * For youtube.com, the id is found by getting the 'v' key from
+     * the search parameters.
+     * For youtu.be, the id is found simply by getting the pathname.
+     */
+    if (videoURL.hostname == 'youtube.com')
+        return videoURL.searchParams.get('v');
+    else if (videoURL.hostname == 'youtu.be')
+        return videoURL.pathname;
+}
+
+function youtubeDl(videoURL, callback) {
+    id = getVideoId(videoURL);
+    videoPath = 'public/videos/' + id + '.mp4';
+
+    /* If file has already been downloaded, return callback(path).
+     * Otherwise, download video and return callback(path).  */
+    if (existsSync(videoPath)) {
+        return callback(videoPath)
+    } else {
+        return spawn(
+            'youtube-dl', [
+                '-f', 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4', /* Format setting.             */
+                'https://youtube.com/watch?v=' + id,               /* Url of video source.        */
+                '-o', videoPath,                                   /* Download video to location. */
+            ]
+        ).on('close', () => { /* When download is finished, return callback. */
+            callback(videoPath)
+        });
+    }
 }
 
 const app = express();
@@ -22,27 +62,9 @@ app.get('/', (_, res) => {
 });
 
 app.post('/video', (req, res) => {
-    fs.readdir('public/videos/', 'utf8', (err, fileNames) => {
-        fileNames.forEach((fileName) => {
-            if (String(fileName).includes(getVideoId(req.body.video_url))) {
-                res.download('public/videos/' + fileName);
-            }
-        });
-    });
-    const youtubeDL = spawn('youtube-dl', [
-        req.body.video_url,
-        '-o',
-        'public/videos/%(title)s%(id)s.%(ext)s',
-    ]);
-    youtubeDL.on('close', () => {
-        fs.readdir('public/videos/', 'utf8', (err, fileNames) => {
-            fileNames.forEach((fileName) => {
-                if (String(fileName).includes(getVideoId(req.body.video_url))) {
-                    res.download('public/videos/' + fileName);
-                }
-            });
-        });
-    });
+    youtubeDl(req.body.video_url, (videoPath) => {
+        res.download(videoPath);
+    })
 });
 
 app.listen(port, hostname, () => {
